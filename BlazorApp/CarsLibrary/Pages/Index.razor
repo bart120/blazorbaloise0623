@@ -1,8 +1,9 @@
 ﻿@page "/cars/list"
+@using Microsoft.JSInterop;
 @using ServicesLibrary.Models;
 @using ServicesLibrary.Services;
 
-
+@inject IJSRuntime jsRuntime
 @inject CarsService servCars
 
 <h3>Liste des voitures</h3>
@@ -24,7 +25,7 @@
                 <td>@car.Price</td>
                 <td>@car.DateOfCirculation.ToShortDateString()</td>
                 <td><NavLink class="btn btn-secondary" href="@($"cars/detail/{car.ID}?nom={car.Model}")">Voir</NavLink></td>
-                <td><button class="btn btn-warning">Suppr.</button></td>
+                <td><button class="btn btn-warning" @onclick="()=>delete(car.ID)">Suppr.</button></td>
             </tr>
         }
     </tbody>
@@ -33,6 +34,19 @@
 
 @code {
     private List<Car>? cars;
+
+    private async Task delete(int id)
+    {
+        var test = await jsRuntime.InvokeAsync<bool>("confirm", $"Voulez-vous supprimer la voiture {id}");
+        if (test)
+        {
+            await servCars.DeleteById(id);
+            this.cars = await servCars.GetAllAsync();
+            //this.cars.Remove(this.cars.Find(x => x.ID == id));
+            await jsRuntime.InvokeVoidAsync("alert", $"La voiture avec l'ID {id} est supprimée.");
+        }
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
