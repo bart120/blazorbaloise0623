@@ -1,0 +1,32 @@
+﻿@page "/cars/detail/{id:int}"
+@using ServicesLibrary.Models;
+@using ServicesLibrary.Services;
+
+@inject CarsService servCars;
+@inject NavigationManager nav
+
+<h3>@car?.Model</h3>
+
+<p>Prix: @car?.Price €</p>
+<div><button class="btn btn-primary" @onclick="back">Revenir à la liste</button></div>
+
+@code {
+    private Car? car;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name ="nom")]
+    public string Name { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.car = await servCars.GetById(Id);
+    }
+
+    private async Task back()
+    {
+        nav.NavigateTo("/cars/list");
+    }
+}

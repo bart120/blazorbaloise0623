@@ -21,5 +21,10 @@ namespace ServicesLibrary.Services
         {
             return await http.GetFromJsonAsync<List<Car>>("cars");
         }
+
+        public async Task<Car> GetById(int id)
+        {
+            return await http.GetFromJsonAsync<Car>($"cars/{id}");
+        }
     }
 }

@@ -23,7 +23,7 @@
                 <td scope="row">@car.Model</td>
                 <td>@car.Price</td>
                 <td>@car.DateOfCirculation.ToShortDateString()</td>
-                <td><NavLink class="btn btn-secondary" href="@($"cars/detail/{car.ID}")">Voir</NavLink></td>
+                <td><NavLink class="btn btn-secondary" href="@($"cars/detail/{car.ID}?nom={car.Model}")">Voir</NavLink></td>
                 <td><button class="btn btn-warning">Suppr.</button></td>
             </tr>
         }
