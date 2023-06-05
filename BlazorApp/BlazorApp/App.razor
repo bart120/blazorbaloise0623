@@ -1,4 +1,9 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@using System.Reflection;
+@using Microsoft.AspNetCore.Components.WebAssembly.Services;
+
+@inject LazyAssemblyLoader assemblyLoader
+
+<Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="OnNavigateAsync" AdditionalAssemblies="@assemblies">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -13,5 +18,14 @@
 
 
 @code{
+    private List<Assembly> assemblies = new();
 
+    private async Task OnNavigateAsync(NavigationContext context)
+    {
+        if (context.Path == "lazy")
+        {
+            var ass = await assemblyLoader.LoadAssembliesAsync(new[] { "LazyLibrary.dll" });
+            assemblies.AddRange(ass);
+        }
+    }
 }
