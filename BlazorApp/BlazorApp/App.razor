@@ -27,5 +27,10 @@
             var ass = await assemblyLoader.LoadAssembliesAsync(new[] { "LazyLibrary.dll" });
             assemblies.AddRange(ass);
         }
+        if (context.Path.Contains("cars"))
+        {
+            var ass = await assemblyLoader.LoadAssembliesAsync(new[] { "CarsLibrary.dll" });
+            assemblies.AddRange(ass);
+        }
     }
 }
