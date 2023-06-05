@@ -12,5 +12,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ApiUrl"]) });
 builder.Services.AddScoped<BrandsService>();
+builder.Services.AddScoped<CarsService>();
 
 await builder.Build().RunAsync();
