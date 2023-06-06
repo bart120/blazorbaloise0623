@@ -37,6 +37,9 @@
 @code {
     private List<Car>? cars;
 
+    [CascadingParameter]
+    public Action<Exception> ProcessError { get; set; }
+
     private async Task delete(int id)
     {
         var test = await jsRuntime.InvokeAsync<bool>("confirm", $"Voulez-vous supprimer la voiture {id}");
@@ -53,6 +56,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        this.cars = await servCars.GetAllAsync();
+
+        try
+        {
+            this.cars = await servCars.GetAllAsync();
+        }
+        catch(Exception e)
+        {
+            ProcessError.Invoke(e);
+        }
     }
 }
