@@ -20,7 +20,7 @@ namespace ServicesLibrary.Services
 
         public async Task<List<Car>?> GetAllAsync()
         {
-            return await http.GetFromJsonAsync<List<Car>>("carsbob");
+            return await http.GetFromJsonAsync<List<Car>>("cars");
         }
 
         public async Task<Car?> GetById(int id)
