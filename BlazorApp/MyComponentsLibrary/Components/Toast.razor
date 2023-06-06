@@ -1,4 +1,5 @@
 ﻿@using MyComponentsLibrary.Services;
+@using System.Timers;
 @implements IDisposable
 
 @inject ToastService serv;
@@ -22,6 +23,8 @@
     private string? message;
     private bool isVisible = false;
     private string? bgCssClass;
+
+    private System.Timers.Timer timer = new System.Timers.Timer(5000);
 
     private void hide()
     {
@@ -53,6 +56,8 @@
         }
         isVisible = true;
         StateHasChanged();
+        timer.Start();
+
         //Console.WriteLine(isVisible);
     }
 
@@ -60,12 +65,14 @@
     {
         serv.OnShow += show;
         serv.OnHide += hide;
-
+        timer.Elapsed += (object? source, ElapsedEventArgs args) => hide();
+        timer.AutoReset = false;
     }
 
     void IDisposable.Dispose()
     {
         serv.OnShow -= show;
         serv.OnHide -= hide;
+        timer.Dispose();
     }
 }
