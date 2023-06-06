@@ -6,6 +6,7 @@
 
 @inject BrandsService servBrands;
 @inject CarsService servCars;
+@inject NavigationManager nav;
 @inject MyComponentsLibrary.Services.ToastService toast;
 
 
@@ -85,6 +86,7 @@
         if (carReturn != null)
         {
             toast.Show("Ajout d'une voiture", $"Voiture enregistrée avec l'ID {carReturn.ID}.", MyComponentsLibrary.ToastLevel.Success);
+            nav.NavigateTo("/cars/list");
         }
         else
         {
