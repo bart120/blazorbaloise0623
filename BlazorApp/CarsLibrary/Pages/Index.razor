@@ -1,10 +1,12 @@
 ﻿@page "/cars/list"
 @using Microsoft.JSInterop;
+@using MyComponentsLibrary.Services;
 @using ServicesLibrary.Models;
 @using ServicesLibrary.Services;
 
 @inject IJSRuntime jsRuntime
 @inject CarsService servCars
+@inject ToastService toast;
 
 <h3>Liste des voitures</h3>
 @if(cars !=  null){
@@ -43,7 +45,8 @@
             await servCars.DeleteById(id);
             this.cars = await servCars.GetAllAsync();
             //this.cars.Remove(this.cars.Find(x => x.ID == id));
-            await jsRuntime.InvokeVoidAsync("alert", $"La voiture avec l'ID {id} est supprimée.");
+            //await jsRuntime.InvokeVoidAsync("alert", $"La voiture avec l'ID {id} est supprimée.");
+            toast.Show("Suppr.", $"La voiture avec l'ID {id} est supprimée.", MyComponentsLibrary.ToastLevel.Info);
         }
 
     }

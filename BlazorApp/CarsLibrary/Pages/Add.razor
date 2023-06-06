@@ -1,9 +1,13 @@
 ﻿@page "/cars/add"
+
 @using ServicesLibrary.Models;
 @using ServicesLibrary.Services;
+@using MyComponentsLibrary.Components
 
 @inject BrandsService servBrands;
 @inject CarsService servCars;
+@inject MyComponentsLibrary.Services.ToastService toast;
+
 
 
 <h3>Ajouter une voiture</h3>
@@ -54,6 +58,8 @@
 </EditForm>
 
 @code {
+
+
     private Car car = new Car { DateOfCirculation= DateTime.Now };
     private List<Brand> brands = new List<Brand>();
 
@@ -65,21 +71,23 @@
 
     private async void submit()
     {
-        Console.WriteLine(car.BrandID);
-        /*var carReturn = await servCars.AddAsync(car);
+        //Console.WriteLine(car.BrandID);
+       
+        var carReturn = await servCars.AddAsync(car);
         if(carReturn != null)
         {
-            Console.WriteLine($"Voiture enregistrée avec l'ID {carReturn.ID}.");
+            toast.Show("Ajout d'une voiture", $"Voiture enregistrée avec l'ID {carReturn.ID}.", MyComponentsLibrary.ToastLevel.Success);
         }
         else
         {
-            Console.WriteLine("erreur post");
-        }*/
+            toast.Show("Erreur", "Erreur lors de l'ajout", MyComponentsLibrary.ToastLevel.Error)
+        }
 
     }
 
     private async Task invalidSubmit()
     {
-        Console.WriteLine("erreur formulaire");
+        //Console.WriteLine("erreur formulaire");
+        toast.Show("Ajout d'une voiture", "erreur formulaire", MyComponentsLibrary.ToastLevel.Error);
     }
 }

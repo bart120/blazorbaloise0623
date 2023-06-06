@@ -1,0 +1,71 @@
+﻿@using MyComponentsLibrary.Services;
+@implements IDisposable
+
+@inject ToastService serv;
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast @(isVisible? "show" : "hide") @bgCssClass" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">@title</strong>
+            <small class="text-body-secondary">just now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" @onclick="hide"></button>
+        </div>
+        <div class="toast-body">
+            @message
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private string? title;
+    private string? message;
+    private bool isVisible = false;
+    private string? bgCssClass;
+
+    private void hide()
+    {
+        isVisible = false;
+        StateHasChanged();
+    }
+
+    private void show(string title, string message, ToastLevel level)
+    {
+        this.title = title;
+        this.message = message;
+        switch (level)
+        {
+            case ToastLevel.Success:
+                bgCssClass = "text-bg-success";
+                break;
+            case ToastLevel.Error:
+                bgCssClass = "text-bg-error";
+                break;
+            case ToastLevel.Warning:
+                bgCssClass = "text-bg-warning";
+                break;
+            case ToastLevel.Info:
+                bgCssClass = "text-bg-info";
+                break;
+            default:
+                bgCssClass = "text-bg-primary";
+                break;
+        }
+        isVisible = true;
+        StateHasChanged();
+        //Console.WriteLine(isVisible);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        serv.OnShow += show;
+        serv.OnHide += hide;
+
+    }
+
+    void IDisposable.Dispose()
+    {
+        serv.OnShow -= show;
+        serv.OnHide -= hide;
+    }
+}
