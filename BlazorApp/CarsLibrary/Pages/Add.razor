@@ -11,62 +11,70 @@
 
 
 <h3>Ajouter une voiture</h3>
+<ErrorBoundary @ref="errorBoundary">
+    <ChildContent>
+        <EditForm OnValidSubmit="@submit" OnInvalidSubmit="@invalidSubmit" Model="@car" novalidate>
+            <DataAnnotationsValidator />
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Modèle</label>
+                <div class="col-sm-10">
+                    <InputText class="form-control" @bind-Value="car.Model" />
+                    <ValidationMessage For="@(()=> car.Model)" class="over" />
+                </div>
+            </div>
 
-<EditForm OnValidSubmit="@submit" OnInvalidSubmit="@invalidSubmit" Model="@car" novalidate>
-    <DataAnnotationsValidator />
-    <div class="mb-3 row">
-        <label class="col-sm-2 col-form-label">Modèle</label>
-        <div class="col-sm-10">
-            <InputText class="form-control" @bind-Value="car.Model" />
-            <ValidationMessage For="@(()=> car.Model)" class="over" />
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Prix</label>
+                <div class="col-sm-10">
+                    <InputNumber class="form-control" @bind-Value="car.Price" />
+                    <ValidationMessage For="@(()=> car.Price)" />
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Modèle</label>
+                <div class="col-sm-10">
+                    <InputDate class="form-control" @bind-Value="car.DateOfCirculation" />
+                    <ValidationMessage For="@(()=> car.DateOfCirculation)" />
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Marque</label>
+                <div class="col-sm-10">
+                    <InputSelect class="form-control form-select" @bind-Value="car.BrandID">
+                        <option value="" selected></option>
+                        @foreach (var brand in brands)
+                        {
+                            <option value="@brand.ID">@brand.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(()=> car.BrandID)" />
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </EditForm>
+    </ChildContent>
+    <ErrorContent>
+        <div>
+            Chargement...
         </div>
-    </div>
-
-    <div class="mb-3 row">
-        <label class="col-sm-2 col-form-label">Prix</label>
-        <div class="col-sm-10">
-            <InputNumber class="form-control" @bind-Value="car.Price" />
-            <ValidationMessage For="@(()=> car.Price)" />
-        </div>
-    </div>
-
-    <div class="mb-3 row">
-        <label class="col-sm-2 col-form-label">Modèle</label>
-        <div class="col-sm-10">
-            <InputDate class="form-control" @bind-Value="car.DateOfCirculation" />
-            <ValidationMessage For="@(()=> car.DateOfCirculation)" />
-        </div>
-    </div>
-
-    <div class="mb-3 row">
-        <label class="col-sm-2 col-form-label">Marque</label>
-        <div class="col-sm-10">
-            <InputSelect class="form-control form-select" @bind-Value="car.BrandID">
-                <option value="" selected></option>
-                @foreach (var brand in brands)
-                {
-                    <option value="@brand.ID">@brand.Name</option>
-                }
-            </InputSelect>
-            <ValidationMessage For="@(()=> car.BrandID)" />
-        </div>
-    </div>
-
-    <div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    </div>
-</EditForm>
-
+    </ErrorContent>
+</ErrorBoundary>
 @code {
+    private ErrorBoundary? errorBoundary;
 
-
-    private Car car = new Car { DateOfCirculation= DateTime.Now };
-    private List<Brand> brands = new List<Brand>();
+    private Car car = new Car { DateOfCirculation = DateTime.Now };
+    private List<Brand> brands = null;
 
     protected override async Task OnInitializedAsync()
     {
         this.brands = await servBrands.getAllAsync();
         //this.car.BrandID = brands.FirstOrDefault().ID;
+        errorBoundary.Recover();
     }
 
     private async void submit()
@@ -74,7 +82,7 @@
         //Console.WriteLine(car.BrandID);
 
         var carReturn = await servCars.AddAsync(car);
-        if(carReturn != null)
+        if (carReturn != null)
         {
             toast.Show("Ajout d'une voiture", $"Voiture enregistrée avec l'ID {carReturn.ID}.", MyComponentsLibrary.ToastLevel.Success);
         }
@@ -90,4 +98,9 @@
         //Console.WriteLine("erreur formulaire");
         toast.Show("Ajout d'une voiture", "erreur formulaire", MyComponentsLibrary.ToastLevel.Error);
     }
+
+    /*public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        errorBoundary.Recover();
+    }*/
 }
