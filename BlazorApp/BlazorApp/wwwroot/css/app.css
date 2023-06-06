@@ -31,3 +31,10 @@ h1:focus {
         content: "An error has occurred."
     }
 
+.invalid{
+    border: solid red 1px;
+}
+
+.validation-message{
+    color:red;
+}
