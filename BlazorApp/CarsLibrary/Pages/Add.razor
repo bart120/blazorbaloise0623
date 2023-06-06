@@ -72,7 +72,7 @@
     private async void submit()
     {
         //Console.WriteLine(car.BrandID);
-       
+
         var carReturn = await servCars.AddAsync(car);
         if(carReturn != null)
         {
@@ -80,7 +80,7 @@
         }
         else
         {
-            toast.Show("Erreur", "Erreur lors de l'ajout", MyComponentsLibrary.ToastLevel.Error)
+            toast.Show("Erreur", "Erreur lors de l'ajout", MyComponentsLibrary.ToastLevel.Error);
         }
 
     }
