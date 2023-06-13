@@ -1,7 +1,10 @@
-﻿@page "/authentication/login"
+﻿@page "/login"
 
 @using BlazorApp.Models;
+@using Blazored.SessionStorage;
 @using Microsoft.AspNetCore.Components.Forms;
+
+@inject ISyncSessionStorageService store;
 
 <h3>Authentification</h3>
 
@@ -31,6 +34,9 @@
 
     private void submit()
     {
-        Console.WriteLine(model.Password);
+        // call api user
+        store.SetItem("USER", new User { FullName = "Bob Leponge", Email = model.Email });
+
+        //Console.WriteLine(model.Password);
     }
 }

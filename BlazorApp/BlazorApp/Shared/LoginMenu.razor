@@ -1,7 +1,42 @@
-﻿<div>
-    <NavLink href="authentication/login">Se connecter</NavLink>
+﻿@using BlazorApp.Models;
+@using Blazored.SessionStorage;
+
+@inject ISyncSessionStorageService store;
+@inject NavigationManager nav;
+
+@if (string.IsNullOrEmpty(name))
+{
+    <div>
+        <NavLink href="login">Se connecter</NavLink>
+    </div>
+}else{
+<div>
+    Bonjour @name
+    <button class="btn btn-warning" @onclick="logout">Se déconnecter</button>
 </div>
 
-@code {
+}
 
+@code {
+    private string? name;
+
+    protected async override Task OnInitializedAsync()
+    {
+        store.Changed += (object sender, ChangedEventArgs args) =>
+        {
+            Console.WriteLine(args.Key);
+            if(args.Key == "USER")
+            {
+                name = (args.NewValue as User)?.FullName;
+                // name = store.GetItem<User>("USER")?.FullName;
+                StateHasChanged();
+            }
+        };
+        name = store.GetItem<User>("USER")?.FullName;
+    }
+
+    private void logout()
+    {
+        nav.NavigateTo("authentication/logout");
+    }
 }

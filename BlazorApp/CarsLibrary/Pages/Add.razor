@@ -1,8 +1,11 @@
 ﻿@page "/cars/add"
 
+@using Microsoft.AspNetCore.Authorization;
 @using ServicesLibrary.Models;
 @using ServicesLibrary.Services;
 @using MyComponentsLibrary.Components
+
+@attribute [Authorize]
 
 @inject BrandsService servBrands;
 @inject CarsService servCars;

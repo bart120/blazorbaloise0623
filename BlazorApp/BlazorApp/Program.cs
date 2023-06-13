@@ -1,6 +1,7 @@
 using BlazorApp;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Blazored.SessionStorage;
 using Microsoft.Extensions.Configuration;
 using MyComponentsLibrary;
 using MyComponentsLibrary.Services;
@@ -19,5 +20,10 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddApiServices();
 //builder.Services.AddScoped<ToastService>();//TODO
 builder.Services.AddToastServices();
+builder.Services.AddBlazoredSessionStorageAsSingleton();
+builder.Services.AddOidcAuthentication(options =>
+{
+    builder.Configuration.Bind("Authentication", options.ProviderOptions);
+});
 
 await builder.Build().RunAsync();

@@ -1,0 +1,22 @@
+﻿@page "/authentication/{action}"
+@using BlazorApp.Models;
+@using Blazored.SessionStorage;
+
+@inject NavigationManager nav;
+@inject ISyncSessionStorageService store;
+
+@code {
+    [Parameter]
+    public string? Action { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(Action == "logout")
+        {
+            store.SetItem<User>("USER", null);
+            store.RemoveItem("USER");
+            //store.Clear();
+            nav.NavigateTo("/");
+        }
+    }
+}
