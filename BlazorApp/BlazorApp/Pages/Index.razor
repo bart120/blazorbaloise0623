@@ -1,3 +1,16 @@
 ﻿@page "/"
+@using BlazorApp.Data;
+@using SqliteWasmHelper;
+
+@inject ISqliteWasmDbContextFactory<BrandContext> factory
 
 <h1>Hello, world!!!!!!!!!</h1>
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = await factory.CreateDbContextAsync();
+        context.Brands.Add(new ServicesLibrary.Models.Brand { Image = "bwm.jpg", Name = "BBMMWW" });
+        await context.SaveChangesAsync();
+    }
+}

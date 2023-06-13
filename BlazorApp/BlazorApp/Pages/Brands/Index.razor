@@ -1,10 +1,14 @@
 ﻿@page "/brands"
+@using BlazorApp.Data;
+@using Microsoft.EntityFrameworkCore;
 @using ServicesLibrary.Models;
 @using ServicesLibrary.Services;
+@using SqliteWasmHelper;
 @layout LayoutBrands
 
 @*@inject HttpClient http*@
 @inject BrandsService servBrands;
+@inject ISqliteWasmDbContextFactory<BrandContext> factory
 
 <PageTitle>Liste des marques</PageTitle>
 
@@ -37,6 +41,10 @@ else
     {
         //brands = await http.GetFromJsonAsync<List<Brand>>("brands");
         //brands = new List<Brand> { new Brand { ID = 1, Name = "Renault", Image = "Renault.jpg" } };
-        brands = await servBrands.getAllAsync();
+        //brands = await servBrands.getAllAsync();
+
+        using var context = await factory.CreateDbContextAsync();
+        brands = await context.Brands.ToListAsync();
+
     }
 }
