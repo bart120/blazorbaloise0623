@@ -1,35 +1,55 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions;
+
 
 
 <div class="mb-3 row">
     <label class="col-sm-2 col-form-label">@Label</label>
     <div class="col-sm-10">
-        <InputText class="form-control" @bind-Value:get="Value" @bind-Value:set="SetValueAsync" />
-
+        <input placeholder="bob" @attributes="Attributes" class="form-control @filedCssClass @CssClass" @bind:get="Value" @bind:set="SetValueAsync" />
+        @foreach(var message in EditContext.GetValidationMessages(fieldId))
+        {
+            <div class="validation-message">@message</div>
+        }
     </div>
 </div>
 
 @code {
+    private FieldIdentifier fieldId;
+    private string filedCssClass => EditContext.FieldCssClass(fieldId) ?? "";
+
+    [Parameter]
+    public string CssClass { get; set; }
 
     [Parameter]
     public string? Label { get; set; }
 
     [Parameter]
-    public string? Value { get; set; }
+    public string Value { get; set; }
 
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<string>> ValueExpression { get; set; }
+
+    [CascadingParameter]
+    private EditContext? EditContext { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
     private async Task SetValueAsync(string newValue)
     {
         Value = newValue;
         await ValueChanged.InvokeAsync(newValue);
+        EditContext?.NotifyFieldChanged(fieldId);
+
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        Console.WriteLine(Value.ToString());
-        
+        fieldId = FieldIdentifier.Create(ValueExpression);
+        //Console.WriteLine();
     }
-
 }
